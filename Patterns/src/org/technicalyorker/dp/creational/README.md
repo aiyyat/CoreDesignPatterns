@@ -1,37 +1,36 @@
-State
-The example is that of a car which is moving along an X, Y coordinates of a canvas. The car can turn to one of the four directions North, South, East or West and accelerate Backward/Forward. The four directions in the example represent 4 Direction Facing State. For example when car is facing North it is in a North Facing State and thus State pattern. Additionally the movements and turns with respect to the current direction determines the position and direction of the car after the movement. 
-This example is quite similar to an old ThoughtWorks interview question on Rovers.
-source: https://github.com/technicalyorker/patterns/tree/master/Patterns/src/org/technicalyorker/dp/behavioural/state
+In order to fortify understanding, one may have to supplement description below with the comments within the code.
 
-Chain of Responsibility 
-Chain of Responsibility is a very commonly found design pattern. It can be used to alter the message flow characteristics in various frameworks. The beauty of this design patterns is that processors in the chain depending on how configurable it is, can be added and removed as desired. Servlet Filters makes use of this design pattern to intercept the requests and responses. One can write a security filter or a compression filter and attach at will, to cater to various requirements of the Application. This is sometimes known by the name 'Intercepting Filters' in JEE pattern terms. Other frame works such as Axis 2 use this to bring in various Messaging requirements of webservices. This has enabled the creators to release and attach features of Web Services specifications at different times or provide them seperately. Reliable Messaging is one such module which can be attached and detached when situation demands. Struts 2 is yet another example that uses this design pattern to extensive levels.
-Here the message objects are sent from links to links that make up the chain.
-The simple example is that of a framework that accepts message requests processes them sends a response, quite like how Java Servlet Framework accept HTTP Requests and respond with an HTTP Response. 
-There are handlers that receives requests, a SecurityHandler which authenticates the requests, prepares Response objects etc. A ChainProcessor registers these Handlers. If I had the luxury of time, my EndPointHandler would have intercepted both request and response objects, the PropertiesParameterHandler would have converted requests to Model maps and the response message would have been derived from the response model maps etc. 
-Servlet Filters on the other hand acts Around the Invocation of the filter chains links which let it intercept both the request and response. Browsers support decompression of compressed objects such as a pdf documents which is primarily achieved by virtue of configured Response wrappers. As of Servlet 2.5 the filters are configured as matching URL patterns in the web.xml deployment descriptor. 
-source: https://github.com/technicalyorker/patterns/tree/master/Patterns/src/org/technicalyorker/dp/behavioural/cor
+Creational Patterns are those which deal with the Creation of Objects for controlling the instances of Objects created.
 
-Command Pattern
-Command Pattern is yet another pattern commonly found in a lot of framework. Struts, Spring MVC are just few of the examples. One main advantage of this pattern is that the object processor is the only one aware of how to execute it. It is the least concern of the caller. This is achieved by virtue of the Command class's execute operation. 
-Our example is one such mini-framework which contains an ActionContext that is ThreadLocal in nature. ActionContext is used to accumulate information across layers and contains an CommandModel, Exception information, Action Command, request parameters and other pieces of information which are required both by the framework itself and developer to make decisions. ActionStatus defines the various possible status e.g. outcomes of a Command Execution. Finally, the Command Model is container of the exchange values that maintained by the context.
-Just as in any framework the ActionController acts based on the input of the user. In case of MVC Frameworks such as Struts the controller acts on the inputs received through an HTTP Request. In our example the client gives the controller the command to add a user by passing the action as 'AddUserAction'. Upon receiving the request it invokes the AddUserAction command. The action class returns an Action Status based on result of execution. If failure, the action context is populated with an ActionExecutionException. In a lot of frameworks the context later goes to become a part of the response such as an HTTP Response.
-source: https://github.com/technicalyorker/patterns/tree/master/Patterns/src/org/technicalyorker/dp/behavioural/command
+Singleton
+SingleTon is one of the most commonly used of design patterns. SingleTon usually has 2 intents:
+There exists only instance of a class. To be able to use a Singleton effectively it becomes important to define the scope of Singleton here. In the example we have written the scope is one instance per Classloader. If two such classes are in two WARs in an EAR deployed into JBoss 5 for example, the App Server ClassLoader would create two seperate instances of the Singleton, one per each ClassLoader which loads the WARs. However if it was in the EAR there would only be one such instance as far as both the WARs are concerned, due to the sheer deligation model followed by JBoss 5 class loaders.
+Containers such as Spring Application Context that manages beans lets us define by scope via the ‘scope’ attribute, one among them is the ‘singleton’ scope which in this context means one instance per ApplicationContext instance. Hence Singleton is a highly relative term. A Singleton class within an EJB Container is said to be JVM Scoped even within a cluster by default. But when an configured as Migratable target or a Pinnable Service, a Singleton EJB becomes is one instance in the whole cluster this service spans at any point of time but is not a true Singleton since it may maintain a second instance during the application life cycle.
+Provide a global point of access to the object. This is important because we do not expose the constructor to the caller since we don’t want him(as in the client) to control the instances of this class. Hence we provide the instances by virtue of a static method that returns him the instance we control within the Singleton.
+Singleton can have a lot of variants based on the necessities of the day. Few of the variants written in the attached code are the Early Loading Singleton, Singleton written to work on single threaded environment, Thread Safe Singletons with/without synchronization etc..
+source: https://github.com/technicalyorker/patterns/tree/master/Patterns/src/org/technicalyorker/dp/creational/singleton
 
-Observer
-The main players of the Observer pattern are the subject and the observers. In the example The Rates Generator Engine simulates a Rate Provider System, whose inputs are feeds to this system. The observers which listen to the polled input of the Rates Engines. The Observers implement the RatesObserver interface and inturn provides custom implementation for the onRateNotified() method. AverageMidRateValuePanel is one such an implementation which outputs the new average value everytime a new Rate is fed into the system. Simultaneously the LatestRateValuePanel displays the Latest values of Ask, Bid and Mid. Java Provides the interfaces such as Observable for adoption of this pattern. 
-source:https://github.com/technicalyorker/patterns/tree/master/Patterns/src/org/technicalyorker/dp/behavioural/observer
+Prototype
+Prototype is yet another creational pattern used to create objects. Unlike Singleton we use Prototype to return a new instance every single time, but without having to go for the process of having to create it ourselves. This comes particularly handy when we have no idea what we are Cloning.
+Prototype is preferred when:
+Prototyped instances should be Instantiatable at the runtime
+Creation of a new instance is usually costly or not possible and hence required to create a cloned copy rather than a new one.
+A hierarchy like in Factory is to be avoided.
+There are two ways of cloning as we all know. Shallow and Deep Cloning.
+The examples demonstrate how shallow Cloning differs from its Deep counterpart. While the FairyWarGame can clone Wizards into the Battalion, all with the same ‘Soul’, DeepCloningPrototypingUtility can deep clone the Serializable objects. These are just 2 different ways of prototyping an object.
+source: https://github.com/technicalyorker/patterns/tree/master/Patterns/src/org/technicalyorker/dp/creational/prototype
 
-Iterator
-This is a very commonly used Design pattern particularly in the Java Collections Framework. This example defines MonthArrayList which is marked Iteratable using the Market Interface Iterable. It provides implementation for the iterator Method that returns an instance of MonthIterator.
-source: https://github.com/technicalyorker/patterns/tree/master/Patterns/src/org/technicalyorker/dp/behavioural/iterator
+Builder:
+Builder pattern is used to construct complex objects that sometimes have to go through several steps. As with Factory for instance, there is a Product that is created which is primarily exposed through the common interface. Builder has applications in almost all frameworks. Apache Camel for example has the Route builder, which uses the Method Chaining to encapsulate endpoint and filter definitions.
+The example in the blog uses builder in the form of a configuration builder which uses method chaining (concept quite familiarly adopted  by Hibernate to create its Configuration Object).The application is a Spring like Container that loads the objects by its default Constructor. Bean Properties have been avoided for simplicity and my laziness ;). The ContainerContext loads the container based on the properties provided. Configuration can be built from multiple sources such as properties files,XML files, DB etc and the combination of the same.
+The ContainerContextFactory delegates the control to the builder to build the ConfigurationBuilder. In the example I have used 2 properties file to load the beans.
+source: https://github.com/technicalyorker/patterns/tree/master/Patterns/src/org/technicalyorker/dp/creational/builder
 
-Coming Soon!
+Factory
+Factory pattern primarily produces a Product exposed via a common interface. The factory in the example is that of a Racquet Factory which is operated by a FactoryOperator. The produceRacquet() in the RacquetFactory is the factory method. The factory Method encapsulates the instantiation logic behind it. Thus an operator can make the factory work via the interface without having to know the details of how to create each product. For him its a black box which produces a Racquet when a red button next to the label is pressed ;).
+A lot of us believe Calendar is an example of Singleton which is not the case. A simple way to test it calls the equals of two Calendar instances. Calendar is a typical Factory which creates its instance based on one’s Locale by default.
+source: https://github.com/technicalyorker/patterns/tree/master/Patterns/src/org/technicalyorker/dp/creational/factory
 
-Memento
-source:https://github.com/technicalyorker/patterns/tree/master/Patterns/src/org/technicalyorker/dp/behavioural/memento
-
-Strategy
-source: https://github.com/technicalyorker/patterns/tree/master/Patterns/src/org/technicalyorker/dp/behavioural/strategy
-
-Template Method
-source: https://github.com/technicalyorker/patterns/tree/master/Patterns/src/org/technicalyorker/dp/behavioural/template
+Abstract Factory
+Abstract Factory is used where one has to create a family of related objects without having to specify its implementations. In the example it is again a RacquetFactory, but this time the materials are dynamically decided based on the customer demand such as quality and price. For example the best quality Tennis Racquet are produced by the Racquet Factory which in turn uses the best quality materials available in the Material Factory. In the example the hierarchy is rather complex, compared to the factory pattern. It is more like a factory of many factories that produces complex objects.
+source: https://github.com/technicalyorker/patterns/tree/master/Patterns/src/org/technicalyorker/dp/creational/abstractfactory
